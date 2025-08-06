@@ -1,0 +1,35 @@
+/* app/static/css/style.css */
+
+/* Deixa o fundo do site com um cinza bem claro, mais suave que o branco puro */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Adiciona um efeito de sombra sutil e um leve "salto" quando passamos o mouse 
+   sobre as linhas da tabela de atendimentos, melhorando a interatividade. */
+.table-hover tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+/* Personalizando as cores dos status (badges) para serem mais significativas.
+  Vamos criar classes customizadas para isso.
+*/
+.badge.status-resolvido {
+    background-color: #198754 !important; /* Verde Sucesso */
+}
+
+.badge.status-pendente {
+    background-color: #ffc107 !important; /* Amarelo Aviso */
+    color: #000 !important; /* Texto preto para melhor contraste */
+}
+
+.badge.status-andamento {
+    background-color: #0d6efd !important; /* Azul Primário */
+}
+
+.badge.status-aberto {
+    background-color: #6c757d !important; /* Cinza Secundário */
+}
