@@ -83,7 +83,7 @@
                         </td>
 
                         <td>
-                            {% if current_user.id == interaction.user_id or current_user.is_supervisor %}
+                            {% if (interaction.status != 'Resolvido') or current_user.is_supervisor %}
                             <a href="{{ url_for('main.edit_interaction', interaction_id=interaction.id) }}" class="btn btn-warning btn-sm">Editar</a>
 
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ interaction.id }}">
@@ -127,8 +127,6 @@
     </div>
   </div>
 </div>
-{% endblock %}
-
 
 {% for interaction in interactions %}
 <div class="modal fade" id="deleteModal{{ interaction.id }}" tabindex="-1">
@@ -152,3 +150,4 @@
   </div>
 </div>
 {% endfor %}
+{% endblock %}
