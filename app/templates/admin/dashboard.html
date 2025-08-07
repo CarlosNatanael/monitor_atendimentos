@@ -115,23 +115,36 @@
 </div>
 
 <script>
-// Código JavaScript para renderizar o gráfico
 document.addEventListener('DOMContentLoaded', function () {
+    const chartLabels = {{ chart_labels|tojson }};
+    const chartValues = {{ chart_values|tojson }};
+
+    // --- INÍCIO DA CORREÇÃO ---
+
+    // 1. Mapeamento de cores: Define a cor correta para cada status
+    const colorMap = {
+        'Resolvido': 'rgba(25, 135, 84, 0.8)',   // Verde
+        'Pendente': 'rgba(255, 193, 7, 0.8)',   // Amarelo
+        'Em Andamento': 'rgba(13, 110, 253, 0.8)',  // Azul
+        'Aberto': 'rgba(108, 117, 125, 0.8)' // Cinza
+    };
+
+    // 2. Cria a lista de cores dinamicamente na ordem correta
+    const backgroundColors = chartLabels.map(label => colorMap[label] || '#CCCCCC'); // Usa a cor do mapa ou um cinza padrão
+
+    // --- FIM DA CORREÇÃO ---
+
     const ctx = document.getElementById('statusChart');
     if (ctx) {
         new Chart(ctx, {
-            type: 'doughnut', // Usamos doughnut, que é uma variação de pizza
+            type: 'doughnut',
             data: {
-                labels: {{ chart_labels|tojson }},
+                labels: chartLabels,
                 datasets: [{
                     label: 'Atendimentos',
-                    data: {{ chart_values|tojson }},
-                    backgroundColor: [
-                        'rgba(25, 135, 84, 0.8)',   // Verde para Resolvido
-                        'rgba(255, 193, 7, 0.8)',   // Amarelo para Pendente
-                        'rgba(13, 110, 253, 0.8)',  // Azul para Em Andamento
-                        'rgba(108, 117, 125, 0.8)', // Cinza para Aberto
-                    ],
+                    data: chartValues,
+                    // 3. Usa a nossa lista de cores dinâmica
+                    backgroundColor: backgroundColors,
                     hoverOffset: 4
                 }]
             },
@@ -140,6 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 plugins: {
                     legend: {
                         position: 'top',
+                        // Deixa as legendas com a cor de texto do tema escuro
+                        labels: {
+                            color: 'var(--cor-texto)'
+                        }
                     }
                 }
             }
