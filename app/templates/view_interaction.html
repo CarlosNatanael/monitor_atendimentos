@@ -16,7 +16,6 @@
                     <li class="list-group-item"><strong>Nome:</strong> {{ interaction.client_name }}</li>
                     <li class="list-group-item"><strong>Telefone:</strong> {{ interaction.client_phone }}</li>
                 </ul>
-
                 <h5 class="card-title">Detalhes do Atendimento</h5>
                 <ul class="list-group list-group-flush mb-4">
                     <li class="list-group-item"><strong>Canal:</strong> {{ interaction.channel }}</li>
@@ -25,16 +24,60 @@
                     <li class="list-group-item"><strong>Atendente:</strong> {{ interaction.user.username }}</li>
                     <li class="list-group-item"><strong>Houve Acesso Remoto?</strong> {% if interaction.had_anydesk_session %} Sim {% else %} Não {% endif %}</li>
                 </ul>
-
                 <h5 class="card-title">Descrição</h5>
                 <div class="card-text bg-light p-3 rounded border">
                     <p style="white-space: pre-wrap;">{{ interaction.description }}</p>
                 </div>
             </div>
-            <div class="card-footer text-end">
+            <div class="card-body border-top">
+                <h5 class="card-title">Histórico de Movimentações</h5>
+                <ul class="list-group list-group-flush">
+                    {% for entry in history %}
+                    <li class="list-group-item">
+                        <p class="mb-0">
+                            Em <strong>{{ entry.timestamp.strftime('%d/%m/%Y às %H:%M') }}</strong>,
+                            o usuário <strong>{{ entry.user.username }}</strong> alterou o campo
+                            <strong>{{ entry.field_changed }}</strong> de
+                            <span class="badge bg-secondary">{{ entry.old_value }}</span> para
+                            <span class="badge bg-primary">{{ entry.new_value }}</span>.
+                        </p>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item">Nenhuma movimentação registrada.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
                 <a href="{{ request.referrer or url_for('main.index') }}" class="btn btn-secondary">Voltar</a>
+            
+                {% if current_user.id == interaction.user_id or current_user.is_supervisor %}
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="bi bi-trash-fill"></i> Excluir Atendimento
+                    </button>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Você tem certeza que deseja excluir o atendimento #{{ interaction.id }} para o cliente <strong>{{ interaction.client_name }}</strong>?</p>
+        <p class="text-danger"><strong>Atenção:</strong> Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <form action="{{ url_for('main.delete_interaction', interaction_id=interaction.id) }}" method="POST">
+            <input type="submit" value="Sim, Excluir" class="btn btn-danger">
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

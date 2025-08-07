@@ -51,3 +51,19 @@ class Interaction(db.Model):
 
     def __repr__(self):
         return f'<Interaction {self.id}>'
+class InteractionHistory(db.Model):
+    __tablename__ = 'interaction_history'
+    id = db.Column(db.Integer, primary_key=True)
+    interaction_id = db.Column(db.Integer, db.ForeignKey('interactions.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    field_changed = db.Column(db.String(50)) # Ex: 'status'
+    old_value = db.Column(db.String(100))
+    new_value = db.Column(db.String(100))
+
+    # Relações para fácil acesso aos nomes
+    user = db.relationship('User')
+    interaction = db.relationship('Interaction', backref=db.backref('history', lazy='dynamic', cascade='all, delete-orphan'))
+
+    def __repr__(self):
+        return f'<History for Interaction {self.interaction_id}>'

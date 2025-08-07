@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, Blueprint
 from flask_login import login_user, logout_user, current_user, login_required
 from app import db
-from app.models import User, Interaction
+from app.models import User, Interaction, InteractionHistory
 from app.forms import LoginForm, RegistrationForm, InteractionForm, EditUserForm
 from sqlalchemy import func
 from datetime import date, datetime, time
@@ -26,7 +26,16 @@ def index():
             had_anydesk_session=interaction_form.had_anydesk_session.data
         )
         db.session.add(new_interaction)
-        db.session.commit()
+        history_log = InteractionHistory(
+            interaction=new_interaction,
+            user_id=current_user.id,
+            field_changed='status',
+            old_value='N/A',
+            new_value=new_interaction.status
+        )
+        db.session.add(history_log)
+
+        db.session.commit() # Commit final
         flash('Atendimento registrado com sucesso!', 'success')
         return redirect(url_for('main.index'))
     
@@ -109,10 +118,6 @@ def register():
 def edit_interaction(interaction_id):
     interaction = Interaction.query.get_or_404(interaction_id)
 
-    if interaction.status == 'Resolvido' and not current_user.is_supervisor:
-        flash('Atendimentos resolvidos não podem ser editados.', 'warning')
-        return redirect(url_for('main.index'))
-
     form = InteractionForm(obj=interaction)
 
     if form.validate_on_submit():
@@ -123,6 +128,16 @@ def edit_interaction(interaction_id):
         interaction.description = form.description.data
         interaction.status = form.status.data
         interaction.had_anydesk_session = form.had_anydesk_session.data
+
+        if interaction.status != form.status.data:
+            history_log = InteractionHistory(
+                interaction=interaction,
+                user_id=current_user.id,
+                field_changed='status',
+                old_value=interaction.status,
+                new_value=form.status.data
+            )
+            db.session.add(history_log)
         
         db.session.commit()
         flash('Atendimento atualizado com sucesso!', 'success')
@@ -149,13 +164,15 @@ def delete_interaction(interaction_id):
 def view_interaction(interaction_id):
     interaction = Interaction.query.get_or_404(interaction_id)
 
-    # Apenas como segurança, verifica se o usuário tem permissão para ver
-    # (dono do atendimento ou supervisor)
     if not current_user.is_supervisor and current_user.id != interaction.user_id:
         flash('Você não tem permissão para visualizar este atendimento.', 'danger')
         return redirect(url_for('main.index'))
 
-    return render_template('view_interaction.html', interaction=interaction)
+    history = []
+    if current_user.is_supervisor:
+        history = interaction.history.order_by(InteractionHistory.timestamp.asc()).all()
+
+    return render_template('view_interaction.html', interaction=interaction, history=history)
 
 @bp.route('/admin/dashboard')
 @login_required
