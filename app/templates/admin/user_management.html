@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gerenciar Usuários</h2>
+    <div>
+        <a href="{{ url_for('main.add_user') }}" class="btn btn-success"><i class="bi bi-person-plus-fill"></i> Adicionar Novo Contribuinte</a>
+        <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Voltar ao Painel</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome de Usuário</th>
+                        <th>Tipo de Conta</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            {% if user.is_supervisor %}
+                                <span class="badge bg-success">Administrador</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Atendente</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <form action="{{ url_for('main.toggle_admin', user_id=user.id) }}" method="POST" class="d-inline">
+                                {% if user.is_supervisor %}
+                                    <button type="submit" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-down-circle"></i> Rebaixar</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-arrow-up-circle"></i> Promover</button>
+                                {% endif %}
+                            </form>
+
+                            <a href="{{ url_for('main.edit_user', user_id=user.id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> Editar</a></a>
+
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}"><i class="bi bi-trash-fill"></i> Excluir</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% for user in users %}
+<div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Você tem certeza que deseja excluir o usuário <strong>{{ user.username }}</strong>?</p>
+        <p class="text-danger"><strong>Atenção:</strong> Todos os atendimentos registrados por este usuário também serão excluídos. Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <form action="{{ url_for('main.delete_user', user_id=user.id) }}" method="POST">
+            <input type="submit" value="Sim, Excluir Usuário" class="btn btn-danger">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

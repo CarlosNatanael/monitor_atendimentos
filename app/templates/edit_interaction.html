@@ -14,8 +14,12 @@
                     {{ form.hidden_tag() }}
 
                     <div class="mb-3">
-                        {{ form.client.label(class="form-label") }}
-                        {{ form.client(class="form-select") }}
+                        {{ form.client_name.label(class="form-label") }}
+                        {{ form.client_name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.client_phone.label(class="form-label") }}
+                        {{ form.client_phone(class="form-control") }}
                     </div>
 
                     <div class="row">

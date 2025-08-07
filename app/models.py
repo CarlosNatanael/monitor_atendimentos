@@ -28,37 +28,26 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         return f'<User {self.username}>'
-class Client(db.Model):
-    """Modelo para os Clientes atendidos."""
-    __tablename__ = 'clients'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False, index=True)
-    phone = db.Column(db.String(40), unique=True, nullable=False)
-    
-    # Relação com os atendimentos: um cliente pode ter vários atendimentos
-    interactions = db.relationship('Interaction', backref='client', lazy='dynamic')
-    
-    def __repr__(self):
-        return f'<Client {self.name}>'
+# app/models.py
 
 class Interaction(db.Model):
     """Modelo para registrar cada Atendimento."""
     __tablename__ = 'interactions'
 
     id = db.Column(db.Integer, primary_key=True)
-    
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
-    
-    channel = db.Column(db.String(50), nullable=False) # 'WhatsApp' ou 'AnyDesk'
-    had_anydesk_session = db.Column(db.Boolean, default=False) # O checkbox extra
-    category = db.Column(db.String(100), nullable=False) # 'Dúvida Técnica', 'Suporte', etc.
+
+    client_name = db.Column(db.String(128), nullable=False, index=True)
+    client_phone = db.Column(db.String(40), nullable=False)
+
+    channel = db.Column(db.String(50), nullable=False)
+    had_anydesk_session = db.Column(db.Boolean, default=False)
+    category = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(50), default='Aberto', nullable=False) # 'Aberto', 'Resolvido', etc.
-    
+    status = db.Column(db.String(50), default='Aberto', nullable=False)
     start_time = db.Column(db.DateTime, default=datetime.utcnow, index=True)
-    end_time = db.Column(db.DateTime, nullable=True) # Preenchido ao resolver
-    
+    end_time = db.Column(db.DateTime, nullable=True)
+
     def __repr__(self):
         return f'<Interaction {self.id}>'

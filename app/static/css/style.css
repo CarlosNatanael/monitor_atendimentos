@@ -1,8 +1,70 @@
-/* app/static/css/style.css */
+/* 1. Paleta de Cores e Variáveis */
+:root {
+    --cor-primaria: #4A90E2;      /* Um azul mais moderno */
+    --cor-primaria-hover: #357ABD;
+    --cor-sucesso: #28a745;
+    --cor-aviso: #ffc107;
+    --cor-perigo: #dc3545;
+    --cor-fundo: #f4f7f6;
+    --cor-navbar: #2c3e50;      /* Um azul escuro/ardósia */
+    --raio-borda: 0.5rem;       /* Bordas mais arredondadas */
+}
 
-/* Deixa o fundo do site com um cinza bem claro, mais suave que o branco puro */
+/* 2. Estilo Global */
 body {
-    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--cor-fundo);
+}
+
+/* 3. Estilos para os Cards */
+.card {
+    border: none;
+    border-radius: var(--raio-borda);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 500;
+}
+
+/* 4. Estilos para os Botões e Navbar */
+.btn {
+    border-radius: var(--raio-borda);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+.btn-primary:hover {
+    background-color: var(--cor-primaria-hover);
+    border-color: var(--cor-primaria-hover);
+}
+
+.navbar.bg-dark {
+    background-color: var(--cor-navbar) !important;
+}
+
+/* 5. Cores dos Status (Badges) */
+.badge.status-resolvido { background-color: var(--cor-sucesso) !important; }
+.badge.status-pendente { background-color: var(--cor-aviso) !important; color: #000 !important; }
+.badge.status-andamento { background-color: var(--cor-primaria) !important; }
+.badge.status-aberto { background-color: #6c757d !important; }
+
+/* Garante que o ícone e o texto no botão tenham um espaço */
+.btn i {
+    margin-right: 0.4rem;
 }
 
 /* Adiciona um efeito de sombra sutil e um leve "salto" quando passamos o mouse 
@@ -32,4 +94,10 @@ body {
 
 .badge.status-aberto {
     background-color: #6c757d !important; /* Cinza Secundário */
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    transition: all 0.2s ease-in-out;
 }

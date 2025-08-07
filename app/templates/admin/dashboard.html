@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard do Administrador{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Dashboard do Administrador</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('main.admin_dashboard') }}" class="d-flex align-items-end">
+            <div class="flex-grow-1 me-2">
+                <label for="search_date" class="form-label"><strong>Exibindo dados do dia:</strong></label>
+                <input type="date" id="search_date" name="search_date" class="form-control" value="{{ today }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <a href="{{ url_for('main.all_interactions') }}" class="text-decoration-none">
+            <div class="card text-white bg-dark text-center card-hover">
+                <div class="card-body">
+                    <h5 class="card-title">{{ stats.values() | sum }}</h5>
+                    <p class="card-text">Total de Atendimentos</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Resolvido', 0) }}</h5>
+                <p class="card-text">Resolvidos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-dark bg-warning text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Pendente', 0) }}</h5>
+                <p class="card-text">Pendentes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Em Andamento', 0) }}</h5>
+                <p class="card-text">Em Andamento</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h4>Atendimentos do Dia</h4></div>
+            <div class="card-body">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Atendente</th>
+                                <th>Cliente</th>
+                                <th>Categoria</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for interaction in interactions %}
+                            <tr>
+                                <td>{{ interaction.user.username }}</td>
+                                <td>{{ interaction.client_name }}</td>
+                                <td>{{ interaction.category }}</td>
+                                <td>
+                                    {% if interaction.status == 'Resolvido' %}<span class="badge status-resolvido">{{ interaction.status }}</span>
+                                    {% elif interaction.status == 'Pendente' %}<span class="badge status-pendente">{{ interaction.status }}</span>
+                                    {% elif interaction.status == 'Em Andamento' %}<span class="badge status-andamento">{{ interaction.status }}</span>
+                                    {% else %}<span class="badge status-aberto">{{ interaction.status }}</span>{% endif %}
+                                </td>
+                                <td><a href="{{ url_for('main.view_interaction', interaction_id=interaction.id) }}" class="btn btn-outline-info btn-sm">Ver</a></td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="5" class="text-center">Nenhum atendimento neste dia.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header"><h4>Status do Dia</h4></div>
+            <div class="card-body">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h4>Atendentes</h4></div>
+            <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                <div class="list-group">
+                    {% for user in users %}
+                    <a href="{{ url_for('main.user_details', user_id=user.id) }}" class="list-group-item list-group-item-action">{{ user.username }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Código JavaScript para renderizar o gráfico
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('statusChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut', // Usamos doughnut, que é uma variação de pizza
+            data: {
+                labels: {{ chart_labels|tojson }},
+                datasets: [{
+                    label: 'Atendimentos',
+                    data: {{ chart_values|tojson }},
+                    backgroundColor: [
+                        'rgba(25, 135, 84, 0.8)',   // Verde para Resolvido
+                        'rgba(255, 193, 7, 0.8)',   // Amarelo para Pendente
+                        'rgba(13, 110, 253, 0.8)',  // Azul para Em Andamento
+                        'rgba(108, 117, 125, 0.8)', // Cinza para Aberto
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

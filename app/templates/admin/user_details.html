@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes de {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalhes do Atendente: {{ user.username }}</h2>
+    <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Voltar ao Painel Admin</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Total', 0) }}</h5>
+                <p class="card-text">Total de Atendimentos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Resolvido', 0) }}</h5>
+                <p class="card-text">Resolvidos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-dark bg-warning text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Pendente', 0) }}</h5>
+                <p class="card-text">Pendentes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info text-center">
+            <div class="card-body">
+                <h5 class="card-title">{{ stats.get('Em Andamento', 0) }}</h5>
+                <p class="card-text">Em Andamento</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Histórico de Atendimentos</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Categoria</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for interaction in interactions %}
+                    <tr>
+                        <td>#{{ interaction.id }}</td>
+                        <td>{{ interaction.client_name }}</td>
+                        <td>{{ interaction.category }}</td>
+                        <td>{{ interaction.start_time.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            {% if interaction.status == 'Resolvido' %}<span class="badge status-resolvido">{{ interaction.status }}</span>
+                            {% elif interaction.status == 'Pendente' %}<span class="badge status-pendente">{{ interaction.status }}</span>
+                            {% elif interaction.status == 'Em Andamento' %}<span class="badge status-andamento">{{ interaction.status }}</span>
+                            {% else %}<span class="badge status-aberto">{{ interaction.status }}</span>{% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.view_interaction', interaction_id=interaction.id) }}" class="btn btn-info btn-sm">Visualizar</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Este usuário ainda não registrou atendimentos.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
