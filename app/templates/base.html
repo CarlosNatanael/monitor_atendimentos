@@ -18,30 +18,39 @@
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <div class="navbar-nav ms-auto d-flex align-items-center">
-          {% if current_user.is_authenticated %}
-      
-              {% if current_user.is_supervisor %}
-                  <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}"><i class="bi bi-person-workspace"></i> Dashboard</a>
-                  <a class="nav-link" href="{{ url_for('main.user_management') }}"><i class="bi bi-people-fill"></i> Usuários</a>
-                  <a class="nav-link" href="{{ url_for('main.reports') }}"><i class="bi bi-bar-chart-line-fill"></i> Relatórios</a>
-              {% else %}
-                  <a class="nav-link" href="{{ url_for('main.index') }}"><i class="bi bi-pencil-square"></i> Registrar Atendimento</a>
-              {% endif %}
-      
-              <a class="nav-link text-danger" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Sair</a>
-      
-          {% else %}
-              <a class="nav-link" href="{{ url_for('main.login') }}"><i class="bi bi-box-arrow-in-right"></i> Entrar</a>
-          {% endif %}
+  <nav class="navbar navbar-expand-lg">
+      <div class="container">
+          <a class="navbar-brand" href="{{ url_for('main.admin_dashboard') if current_user.is_supervisor else url_for('main.index') }}">Monitoramento</a>
+
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <div class="navbar-nav ms-auto d-flex align-items-center">
+                  {% if current_user.is_authenticated %}
+
+                      {% if current_user.is_supervisor %}
+                          <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}"><i class="bi bi-person-workspace"></i> Dashboard</a>
+                          <a class="nav-link" href="{{ url_for('main.user_management') }}"><i class="bi bi-people-fill"></i> Usuários</a>
+                          <a class="nav-link" href="{{ url_for('main.reports') }}"><i class="bi bi-bar-chart-line-fill"></i> Relatórios</a>
+                      {% else %}
+                          <a class="nav-link" href="{{ url_for('main.index') }}"><i class="bi bi-pencil-square"></i> Registrar Atendimento</a>
+                      {% endif %}
+
+                      <a class="nav-link text-danger" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right"></i> Sair</a>
+
+                  {% else %}
+                      <a class="nav-link" href="{{ url_for('main.login') }}"><i class="bi bi-box-arrow-in-right"></i> Entrar</a>
+                  {% endif %}
+
+                  <div class="form-check form-switch ms-3">
+                      <input class="form-check-input" type="checkbox" role="switch" id="themeSwitch">
+                      <label class="form-check-label" for="themeSwitch"><i class="bi bi-moon-stars-fill"></i></label>
+                  </div>
+              </div>
+          </div>
       </div>
-      <div class="form-check form-switch ms-3">
-          <input class="form-check-input" type="checkbox" role="switch" id="themeSwitch">
-          <label class="form-check-label" for="themeSwitch"><i class="bi bi-moon-stars-fill text-white"></i></label>
-      </div>
-    </div>
   </nav>
 
   {% block main_container %}
