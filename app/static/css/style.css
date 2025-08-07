@@ -183,3 +183,173 @@ body {
     flex-direction: column;
     justify-content: center;
 }
+/* Estilo para o interruptor de tema */
+.form-check-input:checked {
+    background-color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+/* ---------------------------------- */
+/* ---         MODO DARK          --- */
+/* ---------------------------------- */
+
+body.dark-mode {
+    --cor-fundo: #1a202c;
+    --cor-texto: #e2e8f0;
+    --cor-card: #2d3748;
+    --cor-borda: #4a5568;
+    --cor-navbar: #171923;
+    color: var(--cor-texto);
+}
+
+body.dark-mode .navbar {
+    background-color: var(--cor-navbar) !important;
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .navbar .nav-link {
+    color: var(--cor-texto) !important;
+}
+
+body.dark-mode .navbar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .card {
+    background-color: var(--cor-card);
+    border: 1px solid var(--cor-borda);
+}
+
+body.dark-mode .card-header {
+    background-color: rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+body.dark-mode .table {
+    color: var(--cor-texto);
+}
+
+body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* {
+    --bs-table-accent-bg: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .table-hover>tbody>tr:hover>* {
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .list-group-item {
+    background-color: var(--cor-card);
+    border-color: var(--cor-borda);
+    color: var(--cor-texto);
+}
+
+body.dark-mode .list-group-item-action:hover {
+    background-color: #4a5568;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #4a5568;
+    border-color: var(--cor-borda);
+    color: var(--cor-texto);
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: #4a5568;
+    border-color: var(--cor-primaria);
+    color: var(--cor-texto);
+    box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+}
+
+body.dark-mode .modal-content {
+    background-color: var(--cor-card);
+}
+
+/* Garante que os títulos e labels dos formulários fiquem brancos */
+body.dark-mode .form-label, 
+body.dark-mode h3 {
+    color: var(--cor-texto);
+}
+
+/* Estiliza o cabeçalho da tabela para o modo escuro */
+body.dark-mode .table thead {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Melhora a aparência do botão secundário (ex: "Pesquisar") no modo escuro */
+body.dark-mode .btn-secondary {
+    background-color: #4a5568;
+    border-color: #4a5568;
+    color: #fff;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #5a6578;
+    border-color: #5a6578;
+}
+
+/* 1. Corrige o fundo branco da tabela no modo escuro */
+body.dark-mode .table {
+    /* Define a cor base da tabela como transparente para herdar o fundo do card */
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--cor-borda);
+}
+
+/* 2. Alinha o texto do checkbox com a caixa de seleção */
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.form-check .form-check-input {
+    margin-right: 0.5em; /* Adiciona um pequeno espaço entre a caixa e o texto */
+}
+
+body.dark-mode .table tbody td {
+    color: #e2e8f0; /* Um branco mais claro e suave */
+    vertical-align: middle; /* Alinha o conteúdo verticalmente no centro da célula */
+}
+
+body.dark-mode .card-header h4 {
+    color: var(--cor-texto);
+}
+
+body.dark-mode .card-header {
+    color: var(--cor-texto);
+}
+
+/* Deixa os subtítulos (h5) claros no modo escuro */
+body.dark-mode .card-body h5 {
+    color: var(--cor-texto);
+}
+
+/* Corrige a caixa de descrição que usava a classe 'bg-light' */
+body.dark-mode .bg-light {
+    background-color: #4a5568 !important; /* Mesma cor dos inputs */
+    border-color: var(--cor-borda) !important;
+}
+
+/* Garante que o texto dentro da caixa de descrição fique claro */
+body.dark-mode .bg-light p {
+    color: var(--cor-texto);
+}
+
+/* Deixa os textos em negrito (strong) mais destacados */
+body.dark-mode .list-group-item strong {
+    color: #fff;
+}
+
+.login-form-container h3 {
+    color: #2c3e50 !important;
+}
+
+/* Mantém a cor para os outros textos */
+.login-form-container .form-check-label,
+.login-form-container a {
+    color: #2c3e50;
+}
+
+.login-form-container a:hover {
+    color: var(--cor-primaria);
+}
