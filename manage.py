@@ -2,8 +2,9 @@ import os
 from app import create_app, db
 from app.models import User
 from getpass import getpass
+from config import Config 
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = create_app(os.getenv('FLASK_CONFIG') or Config)
 
 def create_admin():
     """Cria o usuário administrador inicial."""
@@ -14,12 +15,14 @@ def create_admin():
         if User.query.filter_by(username=username).first():
             print(f"Erro: O usuário '{username}' já existe.")
             return
+
         password = getpass("Digite a senha do admin: ")
         password2 = getpass("Confirme a senha: ")
 
         if password != password2:
             print("Erro: As senhas não coincidem.")
             return
+
         admin_user = User(username=username, is_supervisor=True)
         admin_user.set_password(password)
 
