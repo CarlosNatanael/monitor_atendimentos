@@ -96,11 +96,9 @@
                             {% if current_user.id == interaction.user_id or current_user.is_supervisor %}
                                 <a href="{{ url_for('main.view_interaction', interaction_id=interaction.id) }}" class="btn btn-info btn-sm" title="Visualizar"><i class="bi bi-eye-fill"></i></a>
                         
-                                {% if interaction.status != 'Resolvido' or current_user.is_supervisor %}
-                                    <a href="{{ url_for('main.edit_interaction', interaction_id=interaction.id) }}" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil-fill"></i></a>
-                                {% endif %}
+                                <a href="{{ url_for('main.edit_interaction', interaction_id=interaction.id) }}" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil-fill"></i></a>
                         
-                                {% endif %}
+                            {% endif %}
                         </td>
                     </tr>
                     {% else %}
