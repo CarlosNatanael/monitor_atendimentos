@@ -54,6 +54,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     'rgba(153, 102, 255, 0.8)', 'rgba(255, 159, 64, 0.8)'
                 ]
             }]
+        },
+        options: {
+            // --- ADICIONE A LINHA AQUI ---
+            maintainAspectRatio: false,
+            // -----------------------------
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'var(--cor-texto)'
+                    }
+                }
+            }
         }
     });
 
@@ -72,9 +85,26 @@ document.addEventListener('DOMContentLoaded', function () {
             }]
         },
         options: {
-            indexAxis: 'y', // Deixa as barras na horizontal, melhor para nomes compridos
-            scales: { x: { beginAtZero: true } },
-            plugins: { legend: { display: false } }
+            // --- E ADICIONE A LINHA AQUI TAMBÉM ---
+            maintainAspectRatio: false,
+            // ------------------------------------
+            indexAxis: 'y',
+            scales: { 
+                x: { 
+                    beginAtZero: true,
+                    ticks: { color: 'var(--cor-texto)' }, // Bônus: deixa os números do eixo legíveis
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: 'var(--cor-texto)' }, // Bônus: deixa os nomes dos atendentes legíveis
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            },
+            plugins: { 
+                legend: { 
+                    display: false 
+                } 
+            }
         }
     });
 });
