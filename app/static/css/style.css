@@ -340,6 +340,12 @@ body.dark-mode .list-group-item strong {
     color: #fff;
 }
 
+body.dark-mode .card:has(canvas):hover,
+.card:has(canvas):hover {
+    transform: none; /* Remove o movimento */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Mantém a sombra padrão */
+}
+
 .login-form-container h3 {
     color: #2c3e50 !important;
 }
