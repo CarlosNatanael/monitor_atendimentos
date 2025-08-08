@@ -1,0 +1,11 @@
+1. Ative seu ambiente virtual. O nome que demos foi monitor-venv-py312:
+
+copie: workon monitor-venv-py312
+
+2. Navegue até a pasta do seu projeto:
+
+copie: cd monitor_atendimentos/
+
+3. Puxe as atualizações do GitHub. Este comando vai baixar todas as alterações que você acabou de enviar:
+
+copie: git pull
