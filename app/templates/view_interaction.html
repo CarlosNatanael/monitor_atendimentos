@@ -8,7 +8,15 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Detalhes do Atendimento #{{ interaction.id }}</h3>
-                <span class="badge status-resolvido">Resolvido</span>
+                {% if interaction.status == 'Resolvido' %}
+                    <span class="badge status-resolvido">{{ interaction.status }}</span>
+                {% elif interaction.status == 'Pendente' %}
+                    <span class="badge status-pendente">{{ interaction.status }}</span>
+                {% elif interaction.status == 'Em Andamento' %}
+                    <span class="badge status-andamento">{{ interaction.status }}</span>
+                {% else %}
+                    <span class="badge status-aberto">{{ interaction.status }}</span>
+                {% endif %}
             </div>
             <div class="card-body">
                 <h5 class="card-title">Informações do Cliente</h5>
@@ -29,17 +37,32 @@
                     <p style="white-space: pre-wrap;">{{ interaction.description }}</p>
                 </div>
             </div>
+            {% if current_user.is_supervisor %}
             <div class="card-body border-top">
                 <h5 class="card-title">Histórico de Movimentações</h5>
                 <ul class="list-group list-group-flush">
                     {% for entry in history %}
                     <li class="list-group-item">
                         <p class="mb-0">
-                            Em <strong>{{ entry.timestamp.strftime('%d/%m/%Y às %H:%M') }}</strong>,
+                            Em <strong>{{ entry.timestamp.strftime('%d/%m/%Y')}}</strong>,
                             o usuário <strong>{{ entry.user.username }}</strong> alterou o campo
                             <strong>{{ entry.field_changed }}</strong> de
                             <span class="badge bg-secondary">{{ entry.old_value }}</span> para
-                            <span class="badge bg-primary">{{ entry.new_value }}</span>.
+                                                    
+                            {% if entry.field_changed == 'Status' %}
+                                {# Se a mudança foi no Status, usamos os badges coloridos #}
+                                {% if entry.new_value == 'Resolvido' %}
+                                    <span class="badge status-resolvido">{{ entry.new_value }}</span>
+                                {% elif entry.new_value == 'Pendente' %}
+                                    <span class="badge status-pendente">{{ entry.new_value }}</span>
+                                {% elif entry.new_value == 'Em Andamento' %}
+                                    <span class="badge status-andamento">{{ entry.new_value }}</span>
+                                {% else %}
+                                    <span class="badge status-aberto">{{ entry.new_value }}</span>
+                                {% endif %}
+                            {% else %}
+                                <strong>{{ entry.new_value }}</strong>
+                            {% endif %}
                         </p>
                     </li>
                     {% else %}
@@ -47,6 +70,7 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
             <div class="card-footer d-flex justify-content-between align-items-center">
                 <a href="{{ request.referrer or url_for('main.index') }}" class="btn btn-secondary">Voltar</a>
             

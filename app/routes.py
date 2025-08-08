@@ -121,6 +121,44 @@ def edit_interaction(interaction_id):
     form = InteractionForm(obj=interaction)
 
     if form.validate_on_submit():
+        # Dicionário dos campos que queremos monitorar e seus nomes amigáveis
+        tracked_fields = {
+            'client_name': 'Nome do Cliente',
+            'client_phone': 'Telefone',
+            'channel': 'Canal',
+            'category': 'Categoria',
+            'status': 'Status',
+            'description': 'Descrição'
+        }
+    
+        # Compara o valor antigo com o novo para cada campo
+        for field_name, friendly_name in tracked_fields.items():
+            old_value = str(getattr(interaction, field_name))
+            new_value = str(form[field_name].data)
+    
+            if old_value != new_value:
+                # Se houver mudança, cria um registro no histórico
+                history_log = InteractionHistory(
+                    interaction=interaction,
+                    user_id=current_user.id,
+                    field_changed=friendly_name,
+                    old_value=old_value,
+                    new_value=new_value
+                )
+                db.session.add(history_log)
+    
+        # Trata o campo booleano "AnyDesk" separadamente para um log mais claro
+        if interaction.had_anydesk_session != form.had_anydesk_session.data:
+            history_log = InteractionHistory(
+                interaction=interaction,
+                user_id=current_user.id,
+                field_changed='Acesso via AnyDesk',
+                old_value='Sim' if interaction.had_anydesk_session else 'Não',
+                new_value='Sim' if form.had_anydesk_session.data else 'Não'
+            )
+            db.session.add(history_log)
+    
+        # Após registrar o histórico, finalmente atualiza o atendimento com os novos dados
         interaction.client_name = form.client_name.data
         interaction.client_phone = form.client_phone.data
         interaction.channel = form.channel.data
@@ -128,17 +166,7 @@ def edit_interaction(interaction_id):
         interaction.description = form.description.data
         interaction.status = form.status.data
         interaction.had_anydesk_session = form.had_anydesk_session.data
-
-        if interaction.status != form.status.data:
-            history_log = InteractionHistory(
-                interaction=interaction,
-                user_id=current_user.id,
-                field_changed='status',
-                old_value=interaction.status,
-                new_value=form.status.data
-            )
-            db.session.add(history_log)
-        
+    
         db.session.commit()
         flash('Atendimento atualizado com sucesso!', 'success')
         return redirect(url_for('main.index'))
