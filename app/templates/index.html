@@ -79,7 +79,7 @@
                         <td>{{ interaction.client_name }}</td>
                         <td>{{ interaction.category }}</td>
                         <td>{{ interaction.channel }}</td>
-                        <td>{{ interaction.start_time.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>{{ interaction.start_time.strftime('%d/%m/%Y') }}</td>
                         <td>
                             {% if interaction.status == 'Resolvido' %}
                                 <span class="badge status-resolvido">{{ interaction.status }}</span>
